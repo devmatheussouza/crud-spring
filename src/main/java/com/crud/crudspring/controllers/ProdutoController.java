@@ -7,11 +7,12 @@ import com.crud.crudspring.repositories.ProdutoRepository;
 import jakarta.transaction.Transactional;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
@@ -32,5 +33,21 @@ public class ProdutoController {
         repository.save(produto);
         var uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produto.getId()).toUri();
         return ResponseEntity.created(uri).body(new DadosAtualizadosProduto(produto));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DadosAtualizadosProduto> buscarProdutoPorId(@PathVariable Long id){
+        try{
+            var produto = repository.getReferenceById(id);
+            return ResponseEntity.ok(new DadosAtualizadosProduto(produto));
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping()
+    public ResponseEntity<Page<DadosAtualizadosProduto>> listarTodosProdutos(@PageableDefault(sort = {"valor"}, direction = Sort.Direction.DESC) Pageable page){
+        var pageRequest = repository.findAll(page).map(DadosAtualizadosProduto::new);
+        return ResponseEntity.ok(pageRequest);
     }
 }
