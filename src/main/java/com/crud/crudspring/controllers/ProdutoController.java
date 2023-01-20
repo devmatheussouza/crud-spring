@@ -63,4 +63,16 @@ public class ProdutoController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Object> excluir(@PathVariable Long id){
+        try{
+            var produto = repository.getReferenceById(id);
+            repository.delete(produto);
+            return ResponseEntity.noContent().build();
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
