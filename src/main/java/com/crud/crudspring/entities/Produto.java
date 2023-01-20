@@ -1,5 +1,6 @@
 package com.crud.crudspring.entities;
 
+import com.crud.crudspring.dto.DadosAtualizacao;
 import com.crud.crudspring.dto.DadosCadastroProduto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,5 +29,12 @@ public class Produto {
         this.marca = dados.marca();
         this.valor = dados.valor();
         this.url = dados.url();
+    }
+
+    public void atulizarProduto(DadosAtualizacao dados){
+        if(dados.nome() != null) this.nome = dados.nome();
+        if(dados.marca() != null) this.marca = dados.marca();
+        if(dados.valor() != null) this.valor = dados.valor();
+        if(dados.url() != null) this.url = dados.url();
     }
 }
